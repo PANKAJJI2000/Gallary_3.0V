@@ -495,7 +495,7 @@
     </div>
 
     <audio id="background-music" loop>
-        <source src="/api/placeholder/400/320" type="audio/mp3">
+        <source src="/m2.mp3" type="audio/mp3">
     </audio>
 
     <script>
@@ -861,33 +861,39 @@
             }
 
             function setupMusic() {
-                let isMusicPlaying = false;
+                let isMusicPlaying = true;  // Set to true for autoplay
+                const backgroundMusic = document.getElementById('background-music');
+                const musicToggle = document.getElementById('music-toggle');
+                
+                // Try to play music when page loads
+                backgroundMusic.volume = 0.3;  // Set initial volume
+                backgroundMusic.play().catch(e => {
+                    console.warn("Autoplay prevented:", e);
+                    isMusicPlaying = false;
+                });
+                
+                // Update toggle button state
+                updateMusicToggleIcon();
                 
                 musicToggle.addEventListener('click', () => {
                     if (isMusicPlaying) {
                         backgroundMusic.pause();
-                        musicToggle.querySelector('svg').innerHTML = '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>';
                     } else {
                         backgroundMusic.play().catch(e => console.error("Music playback error:", e));
-                        musicToggle.querySelector('svg').innerHTML = '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/><path d="M10 19c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0-2.5c-.28 0-.5.22-.5.5s.22.5.5.5.5-.22.5-.5-.22-.5-.5-.5z"/>';
                     }
                     isMusicPlaying = !isMusicPlaying;
+                    updateMusicToggleIcon();
                     
                     // Create particles around the button
                     const rect = musicToggle.getBoundingClientRect();
-                    const centerX = rect.left + rect.width / 2;
-                    const centerY = rect.top + rect.height / 2;
-                    createParticles(centerX, centerY, 'sparkle', 15);
+                    createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 'sparkle', 15);
                 });
-                
-                // Apply beautiful transform on hover
-                musicToggle.addEventListener('mouseenter', () => {
-                    musicToggle.style.transform = 'scale(1.15) rotate(5deg)';
-                });
-                
-                musicToggle.addEventListener('mouseleave', () => {
-                    musicToggle.style.transform = '';
-                });
+
+                function updateMusicToggleIcon() {
+                    musicToggle.querySelector('svg').innerHTML = isMusicPlaying ? 
+                        '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/><path d="M10 19c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>' :
+                        '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>';
+                }
             }
 
             function setupFinalButton() {
@@ -959,7 +965,7 @@
                 
                 // Add title
                 const title = document.createElement('h2');
-                title.textContent = 'To My Dearest Pookie';
+                title.textContent = 'Dear Anjal';
                 title.style.fontFamily = "'Dancing Script', cursive";
                 title.style.fontSize = '3rem';
                 title.style.color = 'var(--text-color)';
